@@ -1,0 +1,195 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>题解 P1717 【钓鱼】 - Socialist_Zhao's Blog</title>
+<link href="../styles/styles.css" type="text/css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+</head>
+<!--https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1559377105107&di=fb997d723d154bd93b5a3408a80d695f&imgtype=0&src=http%3A%2F%2Fpic.58pic.com%2F58pic%2F13%2F54%2F94%2F20k58PICyIM_1024.jpg-->
+<!--https://s2.ax1x.com/2019/06/01/V15T3R.jpg-->
+<body>
+	<!--这个部分是header，即上面那一条东西-->
+	<div id="main">
+		<header>
+			<!--这个是header上面的logo，“Social_Zhao's Blog”-->
+			<div id="logo">
+				<a href="../../index.html">SZ's Blog</a>
+			</div>
+			<!--这个脚本将显示header里面的nav，“友链 关于 文章”-->
+			<script src="../js/header-article.js"></script>
+		</header>
+	</div>
+	<div id="content">
+		<!--这里是大标题-->
+		<script src="../js/title.js"></script>
+		<!--左边：主要部分-->
+		<section id="mainContent">
+			<!--第一个box：前言-->
+			<div class="boxes" >
+				<h1>题解 P1717 【钓鱼】</h1>
+				<a href="../tags/tag-ti-jie.html"><div class="tag">题解</div></a>
+				<a href="../tags/tag-tan-xin.html"><div class="tag">贪心</div></a>
+                <a href="../tags/tag-heap.html"><div class="tag">堆</div></a>
+<p>思路：</p>
+<p>这是一道<strong>堆在贪心中的应用</strong>的例题，当然用贪心来做。</p>
+<p>既然是堆，我们先把它写上（自从某次用 \(STL\) 的优先队列\(T\)飞之后就只敢用手写堆了）</p>
+<p>为什么要用堆等会再讲。</p>
+<pre><code class="language-cpp">template&lt;typename T&gt;
+struct Priority_Queue {
+    T heap[100005];
+    int heap_size=0;
+    T top() {
+        return heap[1]; 
+    }
+    bool empty() {
+        return heap_size==0;
+    }
+    int size() {
+        return heap_size;
+    }
+    void push(T x) {
+        heap_size++;
+        heap[heap_size]=x;
+        int now=heap_size;
+        while(now&gt;1) {
+            int next=now&gt;&gt;1;
+            if(heap[now]&lt;heap[next]) {
+                swap(heap[now],heap[next]);
+            }
+            else return;
+            now=next;
+        }
+        return;
+    }
+    void pop() {
+        heap[1]=heap[heap_size];
+        heap_size--;
+        int now=1,next;
+        while((now&lt;&lt;1)&lt;=heap_size) {
+            next=now&lt;&lt;1;
+            if(next+1&lt;=heap_size&amp;&amp;heap[next+1]&lt;heap[next]) next++;
+            if(heap[next]&lt;heap[now]) {
+                swap(heap[now],heap[next]);
+            }
+            else return;
+            now=next;
+        }
+        return;
+    }
+    inline void clear() {
+        while(!empty()) pop();
+    }
+};</code></pre>
+<p>好，这时候我们再来看题：</p>
+<blockquote>
+<p>VIP是个很讲究效率的孩子，他希望用这些时间钓到尽量多的鱼。他从湖1出发，<strong>向右走</strong>，有选择的在一些湖边停留一定的时间钓鱼，<strong>最后在某一个湖边结束钓鱼</strong>。他测出从第\(i\)个湖到\(i+1\)个湖需要走\(5×t_i\)分钟的路，还测出在第\(i\)个湖边停留，第一个5分钟可以钓到鱼\(f_i\)，以后再每钓5分钟鱼，鱼量减少\(d_i\)。为了简化问题，他假定没有其他人钓鱼，也不会有其他因素影响他钓到期望数量的鱼。请编程求出能钓最多鱼的数量。</p>
+</blockquote>
+<p>重点：</p>
+<ul>
+<li><strong>最后在某一个湖边结束钓鱼</strong>：那么设在\(i\)这个湖结束钓的鱼最多。在\(i\)以前可能因为钓的鱼数量不足而非最优，而它右边可能因为浪费了过多时间在走路上面。</li>
+<li><strong>向右走</strong>：这说明他没法走回头路。那么结束于\(x\)鱼塘的路线一定在走路上花了\(\sum\limits_{i=1}^{x-1}{t_i}\)分钟。</li>
+</ul>
+<p>我们需要决定的只有：在每个鱼塘停留的时间，和停止钓鱼的点。</p>
+<p>停止的点最好办，直接枚举。</p>
+<p>停留的时间需要贪心：</p>
+<p>按照一个正常人的思路，他肯定会把时间用得尽量满。这样浪费就少。并且他钓的坑肯定是鱼最多的坑。但是，每钓完鱼后坑里的鱼数是会减少的。我们需要一个能在\(O(log{n})\)的时间复杂度内取出最大的元素，修改然后又用这样的一个时间丢回去的数据结构。这就是<strong>堆</strong>了。</p>
+<p>特别需要注意的是，我们这里的堆只是维护我们的贪心算法的工具，<strong>元素出入堆的顺序与钓鱼的顺序没有任何关系</strong>。</p>
+<p>贪心的代码就可以写出来了。</p>
+<p>细节：\(h\)是小时，\(t_i\)的单位是\(5min\)，所以我们先将\(h\)转为分钟（\(\times 60\)）再转为\(5min\)（\(\div 5\)） 即\(\times 12\)。</p>
+<pre><code class="language-cpp">inline void solve()
+{
+    h*=12;
+    int ans=0;//我们需要取各结束点的最大值
+    for(register int i=1;i&lt;=n;i++) { //枚举结束点
+        h-=t[i-1]; //剩余时间，我们说过花费时间是t数组的前缀和，所以减去即可
+        int newans=0; //本结束点的解
+        q.clear(); //清空堆
+        for(register int j=1;j&lt;=i;j++) q.push(a[j]); //把沿途的鱼塘扔进去
+        for(register int j=1;j&lt;=h;j++) { //枚举时间点
+            fish x=q.top(); //取堆顶
+            q.pop(); //弹出
+            if(x.f&gt;0) { //如果还有鱼就钓
+                newans+=x.f; //累加答案
+                x.f-=x.d; //更新能钓的鱼数
+            }
+            q.push(x); //扔回堆里
+        }
+        ans=max(ans,newans); //更新最优解
+    }
+    cout&lt;&lt;ans&lt;&lt;endl; //输出答案。
+ } </code></pre>
+<p>完整代码：</p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+using namespace std;
+
+/*
+* 
+* 省略快读和堆
+* 
+*/
+
+const int MaxN=30;
+int n,h;
+struct fish {
+    int f,num,d;
+    bool operator &lt; (fish x)const {
+        return f&gt;x.f;
+    }
+}a[MaxN];
+//int d[MaxN];
+int t[MaxN];
+Priority_Queue&lt;fish&gt;q;
+
+inline void init()
+{
+    n=get();
+    h=get();
+    for(register int i=1;i&lt;=n;i++) a[i].f=get(),a[i].num=i;
+    for(register int i=1;i&lt;=n;i++) a[i].d=get();
+    for(register int i=1;i&lt;n;i++) t[i]=get();
+}
+
+inline void solve()
+{
+    h*=12;
+    int ans=0;
+    for(register int i=1;i&lt;=n;i++) {
+        h-=t[i-1];
+        int newans=0;
+        q.clear();
+        for(register int j=1;j&lt;=i;j++) q.push(a[j]);
+        for(register int j=1;j&lt;=h;j++) {
+            fish x=q.top();
+            q.pop();
+            if(x.f&gt;0) {
+                newans+=x.f;
+            }
+            x.f-=x.d;
+            q.push(x);
+        }
+        ans=max(ans,newans);
+    }
+    cout&lt;&lt;ans&lt;&lt;endl;
+ } 
+
+int main()
+{
+    init();
+    solve();
+}</code></pre>
+<br>
+			</div>
+			<br>
+			<script src="../js/utterances.js"></script>
+		</section>
+		<!--右侧边栏：将使用脚本-->
+		<script src="../js/sidbar-article.js"></script>
+	</div>
+	<br><br>
+	<script src="../js/footer.js"></script>
+	<script src="https://highlightjs.org/static/highlight.site.pack.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+</body>
+</html>

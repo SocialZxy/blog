@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>题解 UVA644 【Immediate Decodability】 - Socialist_Zhao's Blog</title>
+<link href="../styles/styles.css" type="text/css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+</head>
+<!--https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1559377105107&di=fb997d723d154bd93b5a3408a80d695f&imgtype=0&src=http%3A%2F%2Fpic.58pic.com%2F58pic%2F13%2F54%2F94%2F20k58PICyIM_1024.jpg-->
+<!--https://s2.ax1x.com/2019/06/01/V15T3R.jpg-->
+<body>
+	<!--这个部分是header，即上面那一条东西-->
+	<div id="main">
+		<header>
+			<!--这个是header上面的logo，“Social_Zhao's Blog”-->
+			<div id="logo">
+				<a href="../../index.html">SZ's Blog</a>
+			</div>
+			<!--这个脚本将显示header里面的nav，“友链 关于 文章”-->
+			<script src="../js/header-article.js"></script>
+		</header>
+	</div>
+	<div id="content">
+		<!--这里是大标题-->
+		<script src="../js/title.js"></script>
+		<!--左边：主要部分-->
+		<section id="mainContent">
+			<!--第一个box：前言-->
+			<div class="boxes" >
+				<h1>题解 UVA644 【Immediate Decodability】</h1>
+				<a href="../tags/tag-ti-jie.html"><div class="tag">题解</div></a>
+                <a href="../tags/tag-trie.html"><div class="tag">Trie</div></a>
+<p>思路： \(Trie\) 树</p>
+<p>我们可以在插入的时候顺便判断一下是否为前缀，<del>增大常数的同时</del>减少期望时间复杂度</p>
+<p>如何解决 \(UVA\) 的坑输入：我们首先把每个 9 之前的串读进一个数组里，遇到 9 在把他们一起处理掉。</p>
+<p>如何判断前缀：</p>
+<p>如果这个串 \(s_1\) 都插入完了，还没有增加新节点，则必然有一 \(s_2\) 的前缀就是 \(s_1\) ，这个 \(s_2\) 就是沿着当前路径一直走下去。</p>
+<p>如果 \(s_1\) 在插入的过程中遇到了 \(s_2\) 的末尾节点，则 \(s_2\) 必为 \(s_1\) 的前缀。</p>
+<p>代码实现如下</p>
+<pre><code class="language-cpp">#include&lt;iostream&gt;
+#include&lt;cstdio&gt;
+#include&lt;cstring&gt;
+using namespace std;
+
+const int MaxN=1e3+5;
+const int MaxS=150;
+
+int n,tot;
+int ch[MaxN][MaxS];
+bool e[MaxN];
+char s[55][150];
+
+inline void init()
+{
+    memset(ch,0,sizeof(ch));
+    memset(e,0,sizeof(e));
+    memset(s,0,sizeof(s));
+}
+
+inline bool insert(char *s) //魔改Trie版子
+{
+    int len=strlen(s);
+    int u=1;
+    bool flag=0; //判断有没有前缀
+    for(register int i=0;i&lt;len;i++) {
+        int c=s[i]-'0';
+        if(!ch[u][c]) ch[u][c]=++tot;
+        else if(i==len-1) flag=1; //如果没有增加节点，且本串已插完，本串即为某一串的前缀
+        u=ch[u][c];
+        if(e[u]) flag=1; //走到了末尾节点，则该串是本串的前缀
+    }
+    e[u]=1;
+    return flag;
+}
+
+inline void solve(int n,int t)
+{
+    tot=1;
+    bool ans=0;
+    for(register int i=1;i&lt;=n;i++) {
+        if(insert(s[i])) ans=1; //插入时发现了前缀
+    }
+    if(!ans) printf("Set %d is immediately decodable\n",t); //输出答案
+    else printf("Set %d is not immediately decodable\n",t); //输出答案
+}
+
+int main()
+{
+    int T=0;
+    int n=1;
+    while(scanf("%s",s[n])!=EOF) { //还能读
+        if(s[n][0]=='9') { //如果是9，这个子任务结束了
+            T++; //数据组数++
+            solve(n,T); //求第T组（共n个串）数据的答案
+            n=0; //n清零
+            init(); //初始化数组
+        }
+        n++; 
+    }
+    return 0;
+ } </code></pre>
+<br>
+			</div>
+			<br>
+			<script src="../js/utterances.js"></script>
+		</section>
+		<!--右侧边栏：将使用脚本-->
+		<script src="../js/sidbar-article.js"></script>
+	</div>
+	<br><br>
+	<script src="../js/footer.js"></script>
+	<script src="https://highlightjs.org/static/highlight.site.pack.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+</body>
+</html>

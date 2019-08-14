@@ -1,0 +1,258 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>对拍器 - Socialist_Zhao's Blog</title>
+<link href="../styles/styles.css" type="text/css" rel="stylesheet">
+<link href="http://cdn.bootcss.com/highlight.js/8.0/styles/monokai_sublime.css" rel="stylesheet">  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+</head>
+<!--https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1559377105107&di=fb997d723d154bd93b5a3408a80d695f&imgtype=0&src=http%3A%2F%2Fpic.58pic.com%2F58pic%2F13%2F54%2F94%2F20k58PICyIM_1024.jpg-->
+<!--https://s2.ax1x.com/2019/06/01/V15T3R.jpg-->
+<body>
+	<!--这个部分是header，即上面那一条东西-->
+	<div id="main">
+		<header>
+			<!--这个是header上面的logo，“Social_Zhao's Blog”-->
+			<div id="logo">
+				<a href="../../index.html">SZ's Blog</a>
+			</div>
+			<!--这个脚本将显示header里面的nav，“友链 关于 文章”-->
+			<script src="../js/header-article.js"></script>
+		</header>
+	</div>
+	<div id="content">
+		<!--这里是大标题-->
+		<script src="../js/title.js"></script>
+		<!--左边：主要部分-->
+		<section id="mainContent">
+			<!--第一个box：前言-->
+			<div class="boxes">
+				<h1>我军对拍器研制成功</h1>
+				<a href="../tags/tag-gong-ju.html"><div class="tag">实用工具</div></a>
+<p>在OI中，我们常常需要将正解和暴力优势互补，暴力慢，正解的正确性有时懒得证，于是我们干脆直接将它们对比。</p>
+<p>但是</p>
+<p>一组一组手敲数据真的慢，还不一定查得出来</p>
+<p>所以，我们就需要<strong>对拍</strong></p>
+<p>对拍四要素：</p>
+<ul>
+<li>正解</li>
+<li>暴力</li>
+<li>数据生成器</li>
+<li><strong>对拍器</strong></li>
+
+</ul>
+<p>正解、暴力根据题目。</p>
+<p>数据生成器：根据题目要求随机生成数据。但是可能造不出HACK数据</p>
+<p>对拍器：将两个程序对比的机器。它的流程为：</p>
+<ul>
+<li>生成一组数据</li>
+<li>正解、暴力算结果</li>
+<li>对比，判断是否一样</li>
+<li>重复执行以上过程直到出错</li>
+
+</ul>
+<p>这就要依靠&lt;windows.h&gt;库中的system()函数。</p>
+<p>代码：</p>
+<pre><code lang='cpp'>#include&lt;iostream&gt;
+#include&lt;windows.h&gt;
+using namespace std;
+int main()
+{
+    while(1)
+    {
+        system(&quot;数据生成器.exe &gt; data.txt&quot;);
+        system(&quot;正解.exe &lt; data.txt &gt; yours.txt&quot;);
+        system(&quot;暴力.exe &lt; data.txt &gt; expected.txt&quot;);
+        if(system(&quot;fc expected.txt yours.txt&quot;))   break;
+    }
+    cout&lt;&lt;&quot;发现错误，请查看！&quot;&lt;&lt;endl;
+    system(&quot;pause&quot;);
+    return 0;
+}
+</code></pre>
+<p>例如我们要检查\(\text{BigInt A+B}\)的正确性。</p>
+<p>数据生成器：</p>
+<pre><code class='language-cpp' lang='cpp'>#include&lt;iostream&gt;
+#include&lt;bits/stdc++.h&gt;
+using namespace std;
+
+int main()
+{
+	srand(time(NULL));
+	int a=rand();
+	int b=rand();
+	cout&lt;&lt;(int)a&lt;&lt;&quot; &quot;&lt;&lt;(int)b;
+}
+</code></pre>
+<p>两个程序：</p>
+<pre><code class='language-cpp' lang='cpp'>#include&lt;iostream&gt;
+using namespace std;
+
+int main()
+{
+	int a,b;
+	cin&gt;&gt;a&gt;&gt;b;
+	cout&lt;&lt;a+b&lt;&lt;endl;
+}
+</code></pre>
+<pre><code class='language-cpp' lang='cpp'>#include&lt;iostream&gt;
+#include&lt;string&gt;
+#include&lt;cstring&gt;
+#include&lt;cstdio&gt;
+using namespace std;
+const int N = 1005;
+struct bigint
+{
+    int len,s[N];
+    bigint()  {  memset(s,0,sizeof(s));  len=1;  }
+    bigint(int num)  {  *this=num; }
+    bigint(char *num) { *this=num; }
+    bigint operator =(int num)
+    {
+        char c[N];
+        sprintf(c,&quot;%d&quot;,num);
+        *this=c;
+        return *this;
+    }
+    bigint operator =(const char *num)
+    {
+        len=strlen(num);
+        for (int i=0;i&lt;len;i++) s[i]=num[len-1-i]-&#39;0&#39;;
+        return *this;
+    }
+    string str()
+    {
+        string res=&quot;&quot;;
+        for (int i=0;i&lt;len;i++) res=(char)(s[i]+&#39;0&#39;)+res;
+        return res;
+    }
+    void clean()
+    {
+        while (len&gt;1&amp;&amp;!s[len-1]) len--;
+    }
+    bigint operator +(const bigint &amp;b)
+    {
+        bigint c;
+        c.len=0;
+        for (int i=0,g=0;g||i&lt;len||i&lt;b.len;i++)
+        {
+            int x=g;
+            if (i&lt;len) x+=s[i];
+            if (i&lt;b.len) x+=b.s[i];
+            c.s[c.len++]=x%10;
+            g=x/10;
+        }
+        return c;
+    }
+    bigint operator -(const bigint &amp;b)
+    {
+        bigint c;
+        c.len=0;
+        int x;
+        for (int i=0,g=0;i&lt;len;i++)
+        {
+            x=s[i]-g;
+            if (i&lt;b.len) x-=b.s[i];
+            if (x&gt;=0) g=0;
+            else{
+                x+=10;
+                g=1;
+            };
+            c.s[c.len++]=x;
+        }
+        c.clean();
+        return c;
+    }
+    bigint operator *(const bigint &amp;b)
+    {
+        bigint c;
+        c.len=len+b.len;
+        for (int i=0;i&lt;len;i++) for (int j=0;j&lt;b.len;j++) c.s[i+j]+=s[i]*b.s[j];
+        for (int i=0;i&lt;c.len-1;i++) { c.s[i+1]+=c.s[i]/10; c.s[i]%=10; }
+        c.clean();
+        return c;
+    }
+    bool operator &lt;(const bigint &amp;b)
+    {
+        if (len!=b.len) return len&lt;b.len;
+        for (int i=len-1;i&gt;=0;i--)
+             if (s[i]!=b.s[i]) return s[i]&lt;b.s[i];
+        return false;
+    }
+    bigint operator +=(const bigint &amp;b)
+    {
+        *this=*this+b;
+        return *this;
+    }
+    bigint operator -=(const bigint &amp;b)
+    {
+        *this=*this-b;
+        return *this;
+    }
+};
+istream&amp; operator &gt;&gt;(istream &amp;in,bigint &amp;x)
+{
+  string s;
+  in&gt;&gt;s;
+  x=s.c_str();
+  return in;
+}
+ostream&amp; operator &lt;&lt;(ostream &amp;out,bigint &amp;x)
+{
+    out&lt;&lt;x.str();
+    return out;
+}
+int main()
+{
+    bigint a,b,c;
+    ios::sync_with_stdio(false);
+    cin&gt;&gt;a&gt;&gt;b;
+//    cout&lt;&lt;a&lt;&lt;endl;
+//    cout&lt;&lt;b&lt;&lt;endl;
+    c=a+b;
+    cout&lt;&lt;c&lt;&lt;endl;
+    return 0;
+}
+</code></pre>
+<p>对拍器：</p>
+<pre><code class='language-cpp' lang='cpp'>#include&lt;iostream&gt;
+#include&lt;windows.h&gt;
+using namespace std;
+int main()
+{
+	int T=0;
+    while(1)
+    {
+    	T++;
+    	cout&lt;&lt;&quot;testdata&lt;&quot;&lt;&lt;T&lt;&lt;&quot;&gt;&quot;&lt;&lt;endl;
+        system(&quot;datamaker.exe &gt; data.txt&quot;);
+        system(&quot;A+B.exe &lt; data.txt &gt; yours.txt&quot;);
+        system(&quot;A+B_1.exe &lt; data.txt &gt; expected.txt&quot;);
+        if(system(&quot;fc expected.txt yours.txt&quot;)) return 0;
+    }
+    return 0;
+}
+</code></pre>
+<p>如果没有错，运行下来是这样的：</p>
+<p><img src='https://cdn.luogu.org/upload/pic/55966.png' alt='' referrerPolicy='no-referrer' /></p>
+<p>我们把BigInt的输出改为：<code>cout&lt;&lt;a+b+rand()%2;</code></p>
+<p>考验rp的时候到了。</p>
+<p><img src='https://cdn.luogu.org/upload/pic/55969.png' alt='' referrerPolicy='no-referrer' /></p>
+<p>事实证明我还是太非了，才五组就挂了。</p>
+</p>
+				</div>
+		<br>
+
+		<script src="../js/utterances.js"></script>
+		</section>
+		<!--右侧边栏：将使用脚本-->
+		<script src="../js/sidbar-article.js"></script>
+	</div>
+	<br><br>
+	<script src="../js/footer.js"></script>
+	<script src="https://highlightjs.org/static/highlight.site.pack.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>题解 P1951 收费站_NOI导刊2009提高（2） - Socialist_Zhao's Blog</title>
+<link href="../styles/styles.css" type="text/css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+</head>
+<!--https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1559377105107&di=fb997d723d154bd93b5a3408a80d695f&imgtype=0&src=http%3A%2F%2Fpic.58pic.com%2F58pic%2F13%2F54%2F94%2F20k58PICyIM_1024.jpg-->
+<!--https://s2.ax1x.com/2019/06/01/V15T3R.jpg-->
+<body>
+	<!--这个部分是header，即上面那一条东西-->
+	<div id="main">
+		<header>
+			<!--这个是header上面的logo，“Social_Zhao's Blog”-->
+			<div id="logo">
+				<a href="../../index.html">SZ's Blog</a>
+			</div>
+			<!--这个脚本将显示header里面的nav，“友链 关于 文章”-->
+			<script src="../js/header-article.js"></script>
+		</header>
+	</div>
+	<div id="content">
+		<!--这里是大标题-->
+		<script src="../js/title.js"></script>
+		<!--左边：主要部分-->
+		<section id="mainContent">
+			<!--第一个box：前言-->
+			<div class="boxes" >
+				<h1>题解 P1951 收费站_NOI导刊2009提高（2）</h1>
+				<a href="../tags/tag-sssp.html"><div class="tag">最短路</div></a>
+				<a href="../tags/tag-er-fen.html"><div class="tag">二分</div></a>
+<p><a target="_blank" href="https://www.luogu.org/problem/P1951">原题链接</a>
+
+</p>
+<p>二分答案+SSSP
+
+</p>
+<blockquote>
+<p>在路上，每经过一个城市，她都要交一定的费用。如果某次交的费用比较多，她的心情就会变得很糟。所以她想知道，在她<strong>能到达目的地的前提下</strong>，她交的费用中<strong>最多的一次最少是多少</strong>。这个问题对于她来说太难了，于是她找到了聪明的你，你能帮帮她吗？
+
+</p>
+</blockquote>
+<p>不难想到，二分答案就适用于求解这类满足一定条件时<strong>最大值最小</strong>或者<strong>最小值最大</strong>的问题。
+
+</p>
+<ul>
+<li><p>首先考虑输出<code>-1</code>的情况</p>
+<p>那么只有一种可能——忽略过路费，用尽所有油也无法到达终点。也就是说：从u到v的最短路径长度大于s</p>
+</li>
+<li><p>然后是其他的情况：</p>
+<p>只需要二分过路费上限，然后将超过上限的点禁用，再跑最短路，判断是否可行即可。</p>
+<p>但是有几点需要注意：</p>
+<ol>
+<li>我们求出的“最小的最大值”一定是某个点的消费，所以二分时应现将c的克隆数组排序，直接在该克隆数组当中二分答案，这样可以把总时间的系数（二分次数）从\(\log_2{1000000000}\)降低至\(\log_2{n}\)（最高是\(\log_2{10000}\)）</li>
+<li>建图的时候要连双向边</li>
+<li><del>关于SPFA，它——</del> 裸的SPFA会T一个点，但加上SLF可以AC，但是仍然比Dijkstra慢了一些（我的提交记录中Dijkstra是259ms）</li>
+</ol>
+</li>
+</ul>
+<p>然后就是代码：
+
+</p>
+<pre><code class="lang-cpp">#include&lt;bits/stdc++.h&gt;
+#define int long long
+using namespace std;
+
+int get()
+{
+    int x = 0, f = 1; char c = getchar();
+    while(!isdigit(c)) { if(c == '-') f = -1; c = getchar(); }
+    while(isdigit(c)) { x = x * 10 + c - '0'; c = getchar(); }
+    return x * f;
+}
+
+const int N = 1e4 + 5, E = 1e5 + 5, inf = 1000000001;
+int n, m, b, st, ed;
+int f[N], c[N];
+struct Edge {
+    int v, nxt, w;
+} edge[E];
+int head[N], k = 0;
+int vis[N], dis[N];
+int l, r, ans;
+priority_queue&lt; pair&lt;int, int&gt; &gt; q;
+
+void addedge(int u, int v, int w)
+{
+    k++;
+    edge[k].v = v;
+    edge[k].w = w;
+    edge[k].nxt = head[u];
+    head[u] = k;
+}
+
+void insedge(int u, int v, int w)
+{
+    addedge(u, v, w);
+    addedge(v, u, w);
+}
+
+bool chk(int maxn)
+{
+    if(f[st] &gt; maxn) return 0;
+    memset(vis, 0, sizeof(vis));
+    for(int i = 1; i &lt;= n; i++) dis[i] = inf;
+    dis[st] = 0;
+    q.push(make_pair(0, st));
+    while(q.size()) {
+        int u = q.top().second; q.pop();
+        if(vis[u]) continue;
+        vis[u] = 1;
+        for(int i = head[u]; i; i = edge[i].nxt) {
+            int v = edge[i].v;
+            int d = edge[i].w;
+            if(dis[v] &gt; dis[u] + d &amp;&amp; f[v] &lt;= maxn) {
+                dis[v] = dis[u] + d;
+                q.push(make_pair(-dis[v], v));
+            }
+        }
+    }
+    if(dis[ed] &gt;= b) return 0;
+    else return 1;
+}
+
+signed main()
+{
+    n = get(), m = get(), st = get(), ed = get(), b = get();
+    for(int i = 1; i &lt;= n; i++) c[i] = f[i] = get();
+    for(int i = 1; i &lt;= m; i++) {
+        int u = get(), v = get(), w = get();
+        if(u == v) continue;
+        insedge(u, v, w);
+    }
+    sort(c + 1, c + 1 + n);
+    if(!chk(c[n])) {
+        printf("-1\n");
+        return 0;
+    }
+    l = 1, r = n;
+    while(l &lt;= r) {
+        int mid = (l + r) &gt;&gt; 1;
+        //printf("%d %d %d\n", l, r, mid);
+        if(chk(c[mid])) ans = c[mid], r = mid - 1;
+        else l = mid + 1;
+    }
+    printf("%lld\n", ans);
+    return 0;
+}</code></pre>
+			</div>
+			<br>
+			<script src="../js/utterances.js"></script>
+		</section>
+		<!--右侧边栏：将使用脚本-->
+		<script src="../js/sidbar-article.js"></script>
+	</div>
+	<br><br>
+	<script src="../js/footer.js"></script>
+	<script src="https://highlightjs.org/static/highlight.site.pack.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+</body>
+</html>

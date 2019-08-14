@@ -1,0 +1,172 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>二分图匹配 - Socialist_Zhao's Blog</title>
+<link href="../styles/styles.css" type="text/css" rel="stylesheet">
+<link href="http://cdn.bootcss.com/highlight.js/8.0/styles/monokai_sublime.min.css" rel="stylesheet">  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+</head>
+<!--https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1559377105107&di=fb997d723d154bd93b5a3408a80d695f&imgtype=0&src=http%3A%2F%2Fpic.58pic.com%2F58pic%2F13%2F54%2F94%2F20k58PICyIM_1024.jpg-->
+<!--https://s2.ax1x.com/2019/06/01/V15T3R.jpg-->
+<body>
+	<!--这个部分是header，即上面那一条东西-->
+	<div id="main">
+		<header>
+			<!--这个是header上面的logo，“Social_Zhao's Blog”-->
+			<div id="logo">
+				<a href="../../index.html">SZ's Blog</a>
+			</div>
+			<!--这个脚本将显示header里面的nav，“友链 关于 文章”-->
+			<script src="../js/header-article.js"></script>
+		</header>
+	</div>
+	<div id="content">
+		<!--这里是大标题-->
+		<script src="../js/title.js"></script>
+		<!--左边：主要部分-->
+		<section id="mainContent">
+			<!--第一个box：前言-->
+			<div class="boxes" >
+                <h1>二分图匹配项目研制顺利进行！</h1>
+                <a href="../tags/tag-eft.html"><div class="tag">二分图匹配</div></a>
+                <p>浅谈简单的二分图匹配</p>
+                <h2>§0 前言</h2>
+                <p>不知道为什么总有一些巨佬喜欢用“组CP”来比喻二分图以及二分图匹配......我个人觉得看这些人组CP很EX</p>
+                <p>所以我就用一种正常（装逼）一点的方式来整理二分图匹配这方面的笔记。</p>
+                <p>起码我是看得懂的。如果您看不懂，还是去看组CP的博客吧。</p>
+                <h2">§1 什么叫二分图</h2>
+                <blockquote>
+                <p>
+                    如果一张<strong>无向图</strong>的n(n≥2)个节点A、B两个<strong>非空</strong>集合，<strong>A∩B=∅</strong>，且
+                    同一集合中的点间没有边相连，那么称这张无向图为<strong>二分图</strong>。A、B分别叫做二分图的<strong>左部节点和
+                    右部节点</strong>（谁左谁右没太大区别）。
+                </p>
+                </blockquote>
+                并且有一个<strong>定理</strong>用于判定一个（无向图）是否为二分图：
+                <blockquote><p>
+                    如果一个（无向）图是二分图，那么<strong>图中无长度为奇数的环</strong>。
+                </p></blockquote>
+                <h2>§2 什么是二分图匹配</h2>
+                <blockquote><p>
+                    任意两边<strong>没有公共点</strong>的边集（以后写作M）称为<strong>图的匹配</strong>
+                    <br>
+                    所以二分图匹配就是二分图中的<strong>匹配</strong>
+                    <br>
+                    其中，M中的边是匹配边，其他为非匹配边，匹配边的端点叫匹配点，其他为非匹配点。
+                </p></blockquote>
+                <p>在常见问题中，经常出现的是求一个二分图的<strong>最大匹配</strong>，即包含边数最多的边集M。</p>
+                <h2>§3 匈牙利算法求二分图最大匹配</h2>
+                <p>匈牙利算法是匈牙利人发明的。它是一种<strong>增广路算法</strong>。</p>
+                <h3>§3.1 增广路</h3>
+                <blockquote><p>
+                    一条连接两个非匹配点的路径，在这条路径上匹配边和非匹配边交替出现，则这条路径叫做<strong>增广路</strong>。
+                </p></blockquote>
+                <p>增广路很明显会有以下两条性质：</p>
+                <li>边数为奇数。</li>
+                <li>奇数边为非匹配边，偶数边为匹配边</li>
+                <p>最开始我看到增广路就头疼。其实理解这个概念最重要的就是理解它的名字。</p>
+                <p>而这个名字的来源就是第三条性质：</p>
+                <li>
+                    如果把增广路上的边的状态全部取反（匹配→非匹配，非匹配→匹配），那么得到的M'依然是合法的匹配，且边数<strong>增加了
+                    一条</strong>
+                </li>
+                <p>比如，一条增广路上的边的状态为（0：非匹配，1：匹配）0101010，匹配边数为3，取反后的到1010101，边数为4.</p>
+                <p>这就是增广在二分图匹配中的体现（在网络最大流中又有另外的体现）</p>
+                <p>于是又有了以下的理论：</p>
+                <p><strong>一个边集M是二分图中的最大匹配，就没有增广路。</strong></p>
+                <p>匈牙利算法就是依靠这个过程来求解的。</p>
+                <h3>§3.2 匈牙利算法的过程</h3>
+                <li>设M为空集，所有边都为非匹配边。</li>
+                <li>寻找增广路，取反，直到图中无增广路。</li>
+                <p>说起来是这样的，但是这个“寻找增广路”方法不是很好理解。我们有一种更好理解的方式：</p>
+                <li>尝试给每一个左点找一个右点进行匹配，这个右点需满足以下条件之一</li>
+                <ul>
+                    <li>右点为非匹配点</li>
+                    <li>右点已经匹配了x点，但是x点可以换一个新的y点匹配，然后右点可以与x点匹配</li>
+                </ul>
+                <p>在这样的“尝试、更换”的过程中，我们就找到了增广路。下面看例题：</p>
+                <p><a target="_blank" href="https://www.luogu.org/problemnew/show/P3386">洛谷P3386【模板】二分图匹配</a></p>
+                <p>这题是让求二分图的最大匹配。我们直接放上匈牙利算法的板子、注释以供参考</p>
+                <pre><code class="cpp">#include&lt;bits/stdc++.h&gt;
+using namespace std;
+
+/*
+> 变量定义：
+> 左部点标号1~n，右部点标号n+1~n+m
+> f[u]=v：u与v匹配
+> vis：标记数组
+> ans：最大匹配的边数
+*/
+
+const int MaxN = 2005;
+const int MaxM = 2 * MaxN * MaxN;
+struct Edge {
+    int v, nxt;
+}edge[MaxM];
+int head[MaxN], k = 0;
+int n, m, e;
+int f[MaxN];
+bool vis[MaxN];
+int ans = 0;
+
+void addedge(int u, int v)
+{
+    edge[++k].v = v;
+    edge[k].nxt = head[u];
+    head[u] = k;
+}
+
+void insert(int u, int v) //添加无向边
+{
+    addedge(u, v);
+    addedge(v, u);
+}
+
+bool dfs(int u) //dfs找增广路
+{
+    if(vis[u]) return 0;
+    vis[u] = 1; //编辑访问，否则会死循
+    for(int i = head[u]; i; i = edge[i].nxt) { //枚举可以连接的点
+        int v = edge[i].v; 
+        if(!f[v] || dfs(f[v])) { //非匹配/可以换点
+             f[v] = u; //v与u匹配
+             return 1; //找到增广路
+        }
+    }
+    return 0; //没找到增广路
+}
+                    
+int main()
+{
+    scanf("%d%d%d", &n, &m, &e);
+    for(int i = 1; i <= e; i++) {
+        int u, v;
+        scanf("%d%d", &u, &v);
+        if(u > n || v > m) continue; //防爆
+        insert(u, v + n); //插入边
+    }
+    for(int i = 1; i <= n; i++) { //枚举所有左点
+        memset(vis, 0, sizeof(vis)); //清空访问
+        ans += dfs(i); //如果找到增广路就++
+    }
+    printf("%d", ans);
+}</code></pre>
+            <p>这道题就完了，有一些双倍经验（逃）</p>
+            <p><a target="_blank" href="https://www.luogu.org/problemnew/show/P2756">P2756 飞行员配对方案问题</a></p>
+            <p><a target="_blank" href="https://www.luogu.org/problemnew/show/P1129">P1129 [ZJOI2007]矩阵游戏</a></p>
+            <p>完结撒花</p>
+			</div>
+			<br>
+			<script src="../js/utterances.js"></script>
+		</section>
+		<!--右侧边栏：将使用脚本-->
+		<script src="../js/sidbar-article.js"></script>
+	</div>
+	<br><br>
+	<script src="../js/footer.js"></script>
+	<script src="https://highlightjs.org/static/highlight.site.pack.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+</body>
+</html>

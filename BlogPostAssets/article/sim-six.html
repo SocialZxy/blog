@@ -1,0 +1,377 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>蒟蒻的六学模拟器 - Socialist_Zhao's Blog</title>
+<link href="../styles/styles.css" type="text/css" rel="stylesheet">
+<link href="http://cdn.bootcss.com/highlight.js/8.0/styles/monokai_sublime.min.css" rel="stylesheet">  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+</head>
+<!--https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1559377105107&di=fb997d723d154bd93b5a3408a80d695f&imgtype=0&src=http%3A%2F%2Fpic.58pic.com%2F58pic%2F13%2F54%2F94%2F20k58PICyIM_1024.jpg-->
+<!--https://s2.ax1x.com/2019/06/01/V15T3R.jpg-->
+<body>
+	<!--这个部分是header，即上面那一条东西-->
+	<div id="main">
+		<header>
+			<!--这个是header上面的logo，“Social_Zhao's Blog”-->
+			<div id="logo">
+				<a href="../../index.html">SZ's Blog</a>
+			</div>
+			<!--这个脚本将显示header里面的nav，“友链 关于 文章”-->
+			<script src="../js/header-article.js"></script>
+		</header>
+	</div>
+	<div id="content">
+		<!--这里是大标题-->
+		<script src="../js/title.js"></script>
+		<!--左边：主要部分-->
+		<section id="mainContent">
+			<!--第一个box：前言-->
+			<div class="boxes">
+				<h1>蒟蒻的六学模拟器</h1>
+                <a href="../tags/tag-gong-ju.html"><div class="tag">实用工具</div></a>
+<p>搬运Luogu Blog时发现的黑历史</p>
+<p>以下为原文：</p>
+<hr>
+<p>本周，我这个蒟蒻灵感大发，想编个程来模拟六学</p>
+<p>格式大概就是：</p>
+<ul>
+<li>有两种操作：</li>
+<li>向字典中添加关系；</li>
+<li>对某个词进行联想</li>
+</ul>
+<p>例如对于“记叙文”，我们可以进行如下联想：</p>
+<p>说到记叙文，我就想到了文体；</p>
+<p>说到文体，下半年，中美，<strong><em>文体两开花</em></strong>，关注，谢谢支持</p>
+<p>教练告诉我们，学知识要学会贯通。</p>
+<p>为了让六老师少想一点，我们不妨。。。。。。</p>
+<p>对了！ \(SPFA\) 记 \(father\) 输出路径！！！</p>
+<p>因此核心代码如下：</p>
+<pre><code class="language-cpp">void spfa(int st)
+{
+    memset(dis,0x3f,sizeof(dis));
+    memset(vis,0,sizeof(vis));
+    dis[st]=0;
+    queue&lt;int&gt;q;
+    q.push(st);
+    vis[st]=1;
+    while(q.size()) {
+        int u=q.front();
+        q.pop();
+        vis[u]=0;
+        for(register int i=head[u];i;i=e[i].nxt) {
+            int v=e[i].v,w=e[i].dis;
+            if(dis[v]&gt;dis[u]+w) {
+                dis[v]=dis[u]+w;
+                father[v]=u;
+                if(!vis[v]) q.push(v);
+            }
+        }
+    }
+}</code></pre>
+<p>但这样问题就来了，我们是说中文的，这个点又不能用中文，怎么办？</p>
+<p><del>HASH!!!但我不会</del> 所以可以用 <strong><em>MAP</em></strong></p>
+<p><del>STL大法好！！！</del></p>
+<p>我们还需要建立两个文件，一个存储&quot;字典&quot;，一个用于存储可联想的关系。</p>
+<p>每次执行程序时，先从这两个文件中把数据读进来，然后就可以修改、调用（<del>为所欲为</del>）</p>
+<p>贴代码（<del>存档</del>）：</p>
+<pre><code class="language-cpp//#########################">//# Writer : ZXY          #
+//#                       #
+//# LGID : Social_Zhao    #
+//#                       #
+//# About this scope:     #
+//# solving WTLKH problem #
+//# in a special(foolish) #
+//# way.                  #
+//#########################
+
+//头文件---------------------------------------------------------------
+
+#include&lt;iostream&gt;
+#include&lt;cstdio&gt;
+#include&lt;queue&gt;
+#include&lt;map&gt;
+#include&lt;string&gt;
+#include&lt;cstring&gt;
+#include&lt;windows.h&gt;
+#include&lt;cstdlib&gt;
+using namespace std; 
+
+//---------------------------------------------------------------------
+
+//上限及宏-------------------------------------------------------------- 
+
+const int MaxN=5e5+5;
+#define max(a,b) a&gt;b?a:b
+#define min(a,b) a&lt;b?a:b
+
+//---------------------------------------------------------------------- 
+
+//基本变量-------------------------------------------------------------- 
+
+map&lt;string, int&gt; change;//将字符串映射成整形（太弱不会HASH） 
+map&lt;int ,string&gt; rev;//上方反过来
+struct Edge {
+    int u,v,nxt,dis;
+};//边 
+Edge e[MaxN];
+int head[MaxN],dis[MaxN],father[MaxN];
+bool vis[MaxN]; 
+int tot_node=0,tot_edge=0,k=0; 
+
+//----------------------------------------------------------------------
+
+//函数------------------------------------------------------------------
+
+void memsets();//初始化变量 
+void init();//程序预热 
+void readdata();//读数据 
+void read_map();//读入映射 
+void read_relation();//读入边 
+void insert_edge(int,int,int);//添加双向边 
+void add_edge(int,int,int);//添加单向边 
+void open_windows();
+void new_relation();
+void rebuild();
+void run();
+void spfa(int);
+void print_way(int);
+
+void print_way(int u)
+{
+    if(father[u]==0) return;
+    print_way(father[u]);
+    cout&lt;&lt;"说到"&lt;&lt;rev[father[u]]&lt;&lt;"，我就想到了"&lt;&lt;rev[u]&lt;&lt;";"&lt;&lt;endl;
+    return;
+}
+
+void spfa(int st)
+{
+    memset(dis,0x3f,sizeof(dis));
+    memset(vis,0,sizeof(vis));
+    dis[st]=0;
+    queue&lt;int&gt;q;
+    q.push(st);
+    vis[st]=1;
+    while(q.size()) {
+        int u=q.front();
+        q.pop();
+        vis[u]=0;
+        for(register int i=head[u];i;i=e[i].nxt) {
+            int v=e[i].v,w=e[i].dis;
+            if(dis[v]&gt;dis[u]+w) {
+                dis[v]=dis[u]+w;
+                father[v]=u;
+                if(!vis[v]) q.push(v);
+            }
+        }
+    }
+}
+
+void run()
+{
+    running:
+    system("cls");
+    cout&lt;&lt;"输入联想起点"&lt;&lt;endl;
+    string start;
+    cin&gt;&gt;start;
+    if(!change[start]) {
+        cout&lt;&lt;"词典中没有。。。"&lt;&lt;endl;
+        char a=getchar();
+        a=getchar();
+        goto running;
+    }
+    spfa(change[start]);
+    if(dis[change["文体两开花"]]&gt;1e2) {
+        cout&lt;&lt;"六老师想死了。。。"&lt;&lt;endl;
+        exit(0);
+    } 
+    else {
+        print_way(father[change["文体两开花"]]);
+        cout&lt;&lt;"下半年，中美，西游记，文体两开花，关注，谢谢支持"&lt;&lt;endl;
+    }
+}
+
+void rebuild()
+{
+    freopen("映射.txt","w",stdout);
+    cout&lt;&lt;tot_node&lt;&lt;endl;
+    for(register int i=1;i&lt;=tot_node;i++) {
+        cout&lt;&lt;rev[i]&lt;&lt;" "&lt;&lt;i&lt;&lt;endl;
+    }
+    freopen("关系.txt","w",stdout);
+    cout&lt;&lt;tot_edge&lt;&lt;endl;
+    for(register int i=1;i&lt;=tot_edge;i++) {
+        cout&lt;&lt;e[i].u&lt;&lt;" "&lt;&lt;e[i].v&lt;&lt;endl;
+    }
+    return; 
+}
+
+void new_relation()
+{
+    system("cls");
+    cout&lt;&lt;"输入联想关系的总数："&lt;&lt;endl;
+    int opt;
+    cin&gt;&gt;opt; 
+    cout&lt;&lt;"输入联想的关系"&lt;&lt;endl;
+    for(register int i=1;i&lt;=opt;i++) {
+        string s1,s2;
+        cin&gt;&gt;s1&gt;&gt;s2;
+        if(s1==s2) {
+            cout&lt;&lt;"自环，下一组"&lt;&lt;endl;
+            continue;
+        }
+        if(!change[s1]) {
+            change[s1]=++tot_node;
+            rev[tot_node]=s1;
+        }
+        if(!change[s2]) {
+            change[s2]=++tot_node;
+            rev[tot_node]=s2;
+        }
+        tot_edge+=2;
+        insert_edge(change[s1],change[s2],1);
+        cout&lt;&lt;"Accepted!"&lt;&lt;endl; 
+    }
+    cout&lt;&lt;"正在处理........";
+    rebuild();
+}
+
+void open_windows()
+{
+    printf("\n\n\n\n\n\n\n");
+    printf("                         #############################\n");
+    printf("                         #                            #\n");
+    printf("                         # 文体两开花：               #\n");
+    printf("                         #                            #\n");
+    printf("                         # 操作：                     #\n");
+    printf("                         # 按1：加入关系              #\n");
+    printf("                         # 按2：开始模拟              #\n");
+    printf("                         # 由于技术原因，一次只能操作 #\n");
+    printf("                         # 一种QAQ                    #\n");
+    printf("                         #                            #\n");
+    printf("                         ##############################\n");
+    printf("                         ");
+}
+
+void insert_edge(int u,int v,int dis)
+{
+    add_edge(u,v,dis);
+    add_edge(v,u,dis);
+} 
+
+void add_edge(int u,int v,int dis)
+{
+    e[++k].v=v;
+    e[k].u=u; 
+    e[k].dis=dis;
+    e[k].nxt=head[u];
+    head[u]=k;
+}
+
+void memsets()
+{
+    memset(head,0,sizeof(head));
+    memset(e,0,sizeof(e));
+    memset(dis,0,sizeof(dis));
+    memset(father,0,sizeof(father));
+    tot_node=0;
+    tot_edge=0;
+    change.clear();
+    rev.clear();
+}
+
+void read_map()
+{
+    freopen("映射.txt","r",stdin);
+    scanf("%d",&amp;tot_node);//读入点数
+    for(register int i=1;i&lt;=tot_node;i++) {
+        string s;int num;
+        cin&gt;&gt;s&gt;&gt;num;
+        change[s]=num;
+        rev[num]=s;
+    }
+    freopen("CON","r",stdin);
+    cout&lt;&lt;"wenjianguanbi???"&lt;&lt;endl; 
+} 
+
+void read_relation()
+{
+    freopen("关系.txt","r",stdin);
+    scanf("%d",&amp;tot_edge);
+    for(register int i=1;i&lt;=tot_edge;i++) {
+        int u,v;
+        scanf("%d%d",&amp;u,&amp;v);
+        add_edge(u,v,1);
+    }
+    freopen("CON","r",stdin);
+    cout&lt;&lt;"wenjianguanbi???"&lt;&lt;endl; 
+}
+
+void readdata()
+{
+    read_map();
+    /*
+    for(register int i=1;i&lt;=tot_node;i++) {
+        cout&lt;&lt;rev[i]&lt;&lt;" "&lt;&lt;i&lt;&lt;endl;
+    }
+    */
+    read_relation();
+}
+
+void init()
+{
+    memsets();//初始化所有数组及变量 
+    readdata();//读数据 
+} 
+
+//----------------------------------------------------------------------
+
+int main()
+{
+    printf("\n\n\n\n\n\n\n\n\n\n\n                               预热中......");
+    init();//预热 
+
+    system("cls");
+    printf("\n\n\n\n\n\n\n\n\n\n\n                               预热完毕");
+    system("cls");
+
+    start:
+    system("cls"); 
+    open_windows();//打开窗口 
+    cout&lt;&lt;"操作 : ";
+    int opt;
+    cin&gt;&gt;opt;
+    switch(opt) {
+        case 1:
+            new_relation();
+            break;
+        case 2:
+            run();
+            break;
+        default:
+            cout&lt;&lt;"                         输入不合法。按任意键重来"&lt;&lt;endl;
+            char a=getchar();
+            a=getchar();
+            goto start;
+            break; 
+    }
+
+    end:
+        return 0;
+}</code></pre>
+<br>
+			</div>
+		<br>
+		<script src="../js/utterances.js"></script>
+		</section>
+		<!--右侧边栏：将使用脚本-->
+		<script src="../js/sidbar-article.js"></script>
+	</div>
+	<br><br>
+	<script src="../js/footer.js"></script>
+	<script src="https://highlightjs.org/static/highlight.site.pack.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+</body>
+</html>

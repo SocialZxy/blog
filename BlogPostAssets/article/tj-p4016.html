@@ -1,0 +1,146 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>题解 P4016 【负载平衡问题】 - Socialist_Zhao's Blog</title>
+<link href="../styles/styles.css" type="text/css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+</head>
+<!--https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1559377105107&di=fb997d723d154bd93b5a3408a80d695f&imgtype=0&src=http%3A%2F%2Fpic.58pic.com%2F58pic%2F13%2F54%2F94%2F20k58PICyIM_1024.jpg-->
+<!--https://s2.ax1x.com/2019/06/01/V15T3R.jpg-->
+<body>
+	<!--这个部分是header，即上面那一条东西-->
+	<div id="main">
+		<header>
+			<!--这个是header上面的logo，“Social_Zhao's Blog”-->
+			<div id="logo">
+				<a href="../../index.html">SZ's Blog</a>
+			</div>
+			<!--这个脚本将显示header里面的nav，“友链 关于 文章”-->
+			<script src="../js/header-article.js"></script>
+		</header>
+	</div>
+	<div id="content">
+		<!--这里是大标题-->
+		<script src="../js/title.js"></script>
+		<!--左边：主要部分-->
+		<section id="mainContent">
+			<!--第一个box：前言-->
+			<div class="boxes" >
+				<h1>题解 P4016 【负载平衡问题】</h1>
+				<a href="../tags/tag-ti-jie.html"><div class="tag">题解</div></a>
+                <a href="../tags/tag-tan-xin.html"><div class="tag">贪心</div></a>
+                <p><a href="https://www.luogu.org/problem/P4016">原题链接</a></p>
+                <p>这玩意出自“网络流24题”？可是。。。好像是贪心啊。</p>
+<p>这题的难点主要是列方程：</p>
+<p>首先，给没学《数据的分析（八年级下）》就来切此题的巨佬一点注释：</p>
+<blockquote>
+<p>\(\overline{x}_a\) 表示平均数，读作x bá， \(\overline{x}_a=\dfrac{a_1+a_2+......+a_n}{n}\) </p>
+<p>\(m_{0.5}(a_1,a_2,......,a_n)\) 表示一组数据的中位数。文中取 \(a_{n/2+1}\) </p>
+</blockquote>
+<p>设 \(K_1,K_2,......,K_n\) 表示第 \(1,2,......,n\) 个人给他左边的人的货物数。</p>
+<ul>
+<li>
+<p>\(SP\) ： \(K_1\) 表示第一个人给第 \(N\) 个人的货物数，是个未知数。</p>
+<p>\(A_1,A_2,......,A_n\) 表示每人现有的货物数。</p>
+</li>
+</ul>
+<p>则有：</p>
+<p>\(A_1-K_1+K_2=\overline{x}_A\) </p>
+<p>故有：</p>
+<ul>
+<li>\(K_2=\overline{x}_A+K_1-A_1\) </li>
+</ul>
+<p>同理可得：</p>
+<ul>
+<li>
+<p>\(K_3=\overline{x}_A+K_2-A_2\) </p>
+<p>\(\begin{cases}K_2=\overline{x}_A+K_1-A_1\\K_3=\overline{x}_A+K_2-A_2\\...\\K_n=\overline{x}_A+K_{n-1}-A_n\end{cases}\) </p>
+</li>
+</ul>
+<p>这是一个 \(n\) 元 \(1\) 次方程，怎么解？</p>
+<p><del>暴力！</del> 当然是用代入法消元啊</p>
+<p>以 \(K_3\) 为例， \(K_3=2\overline{x}_A+K_1-A_1-A_2\) </p>
+<p>我们设 \(X_i=-i\overline{x}_A+\sum\limits_{j=1}^{i-1}{A_j}\) </p>
+<ul>
+<li>\(X_2=A_1+A_2-2\overline{x}_A\) </li>
+<li>\(X_3=A_1+A_2+A_3-3\overline{x}_A\) </li>
+</ul>
+<p>做差，得：</p>
+<ul>
+<li>\(X_3=X_2-\overline{x}_A+A_3\) </li>
+</ul>
+<p>观察这个式子，我们可以发现一个一般规律：</p>
+<ul>
+<li>\(X_i=X_{i-1}-\overline{x}_A+A_i\) - - - - - - - - - - - - - - - - - - - - ①</li>
+</ul>
+<p>然后：</p>
+<ul>
+<li>\(K_2=K_1-X_1\) </li>
+<li>\(K_3=K_1-X_2\) </li>
+<li>......</li>
+<li>\(K_n=K_1-X_{n-1}\) </li>
+</ul>
+<p>我们知道：</p>
+<p>\(ans=\sum\limits_{i=1}^{n}{|K_i|}\) </p>
+<p>故：</p>
+<p>\(ans=|K_1-0|+|K_1-X_1|+......+|K_1+X_{n-1}|\) </p>
+<p>∴ \(min \{ans\}=min\{|K_1-0|+|K_1-X_1|+......+|K_1+X_{n-1}|\}\) </p>
+<p>这个式子的几何意义：</p>
+<p>在数轴上选择一个 \(K_1\) ，使之到 \(0,X_1,X_2,......,X_{n-1}\) 的距离之和最小</p>
+<p>这就是某个“输油管道问题”【橙题】</p>
+<p>这个 \(K_1\) 我们要给它赋一个最优值：</p>
+<p>这个值就是 \(m_{0.5}\{0,X_1,X_2,......,X_{n-1}\}\) 。</p>
+<p>证明略</p>
+<p>\(min \{ans\}=|m-0|+|m-X_1|+......+|m-X_{n-1}|\) - - - - - - ②</p>
+<p>使用①和②即可解此题。</p>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+#define int long long
+using namespace std;
+
+const int maxn=1e6+5;
+int a[maxn],x[maxn];
+int n;
+
+inline int get()
+{
+    int x=0;int f=1;char c=getchar();
+    while(!isdigit(c)) { if(c=='-') f=-1; c=getchar(); }
+    while(isdigit(c)) { x=x*10+c-'0'; c=getchar(); }
+    return x*f;
+}
+
+signed main()
+{
+    n=get();
+    int x_ba=0;
+    for(register int i=1;i&lt;=n;i++) {
+        a[i]=get();
+        x_ba+=a[i];
+    }
+    x_ba/=n;
+    for(register int i=1;i&lt;=n;i++) {
+        x[i]=x[i-1]-a[i]+x_ba;
+    }
+    sort(x+1,x+1+n);
+    int m=x[n/2+1],ans=0;
+    for(register int i=1;i&lt;=n;i++) {
+        ans+=abs(x[i]-m);
+    }
+    cout&lt;&lt;ans&lt;&lt;endl;
+}</code></pre>
+<br>
+			</div>
+			<br>
+			<script src="../js/utterances.js"></script>
+		</section>
+		<!--右侧边栏：将使用脚本-->
+		<script src="../js/sidbar-article.js"></script>
+	</div>
+	<br><br>
+	<script src="../js/footer.js"></script>
+	<script src="https://highlightjs.org/static/highlight.site.pack.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+</body>
+</html>

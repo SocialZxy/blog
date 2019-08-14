@@ -1,0 +1,122 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>题解 P1325 【雷达安装】 - Socialist_Zhao's Blog</title>
+<link href="../styles/styles.css" type="text/css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+</head>
+<!--https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1559377105107&di=fb997d723d154bd93b5a3408a80d695f&imgtype=0&src=http%3A%2F%2Fpic.58pic.com%2F58pic%2F13%2F54%2F94%2F20k58PICyIM_1024.jpg-->
+<!--https://s2.ax1x.com/2019/06/01/V15T3R.jpg-->
+<body>
+	<!--这个部分是header，即上面那一条东西-->
+	<div id="main">
+		<header>
+			<!--这个是header上面的logo，“Social_Zhao's Blog”-->
+			<div id="logo">
+				<a href="../../index.html">SZ's Blog</a>
+			</div>
+			<!--这个脚本将显示header里面的nav，“友链 关于 文章”-->
+			<script src="../js/header-article.js"></script>
+		</header>
+	</div>
+	<div id="content">
+		<!--这里是大标题-->
+		<script src="../js/title.js"></script>
+		<!--左边：主要部分-->
+		<section id="mainContent">
+			<!--第一个box：前言-->
+			<div class="boxes" >
+				<h1>题解 P1325 【雷达安装】</h1>
+				<a href="../tags/tag-ti-jie.html"><div class="tag">题解</div></a>
+                <a href="../tags/tag-tan-xin.html"><div class="tag">贪心</div></a>
+<p>首先这是一道贪心题。</p>
+<p>第一个，雷达肯定是坐标轴上的点，这样视野才最开阔。</p>
+<p>根据光路可逆（大雾），岛能看到你，你也就能看到岛。</p>
+<p>所以 说我们先处理出每个岛 \((x,y)\) 能看到的坐标轴的范围：</p>
+<p>设 \(len=\sqrt{d^2-y^2}\) //勾股定理</p>
+<p>这个岛能看到的范围就是 \([ x-len , x+len ]\) 。</p>
+<p>这样我们就得到了 \(n\) 个区间，要保证每个区间内有一个雷达。</p>
+<p>这就是 <strong>区间选点</strong> 问题。参见蓝皮书（信息学奥赛一本通 · 提高篇）</p>
+<pre><code class="language-cpp">#include&lt;iostream&gt;
+#include&lt;cstdio&gt;
+#include&lt;fstream&gt;
+#include&lt;algorithm&gt;
+#include&lt;cstring&gt;
+#include&lt;cmath&gt;
+using namespace std;
+
+const int MaxN=1005;
+struct segment {
+    double l,r;
+}a[MaxN];
+int n;
+double d;
+int num[MaxN];
+
+inline double calc(double y)
+{
+    return sqrt(d*d-y*y);
+}
+
+inline void init()
+{
+    scanf("%d%lf",&amp;n,&amp;d); 
+    for(register int i=1;i&lt;=n;i++) {
+        double x,y;
+        scanf("%lf%lf",&amp;x,&amp;y);
+        if(y&gt;d) { //如果y太大了，说明在哪放都无济于事
+            printf("-1"); 
+            exit(0);
+        }
+        double len=calc(y); 
+        a[i].l=x-len; 
+        a[i].r=x+len;
+        num[i]=1; //这一行和前两行的意思：[l,r]要求有一个点
+    }
+}
+
+bool cmp(segment x,segment y)
+{
+    return x.r&lt;y.r;
+}
+
+inline void work()
+{
+    int ans=0; 
+    sort(a+1,a+1+n,cmp); //先排序，按右端点
+    for(int i=1;i&lt;=n;i++) { //看每一条区间
+        double nowr=a[i].r; //这一条区间的右端点。因为放右端点的话就有更大几率影响其他的区间
+        if(num[i]&lt;=0) continue; //如果没需求了，就直接跳过
+        num[i]--; //需求减一
+        for(register int j=i+1;j&lt;=n;j++) { //看后面相交的区间
+            if(a[j].l&lt;=nowr) { 
+                num[j]--; //同样需求减一
+            }
+        }
+        ans++; //代价加一
+    }
+    printf("%d",ans);
+}
+
+int main()
+{
+    init(); //初始化出区间
+    work(); //贪心
+}</code></pre>
+<p>虽然是两重循环，但是 <del>n太小</del> 后面会自动 <code>continue</code> ，所以理论上复杂度还是 \(O ( n )\) 的，不可能超时。</p>
+<br>
+			</div>
+			<br>
+			<script src="../js/utterances.js"></script>
+		</section>
+		<!--右侧边栏：将使用脚本-->
+		<script src="../js/sidbar-article.js"></script>
+	</div>
+	<br><br>
+	<script src="../js/footer.js"></script>
+	<script src="https://highlightjs.org/static/highlight.site.pack.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+</body>
+</html>

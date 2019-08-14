@@ -1,0 +1,747 @@
+@charset "utf-8";
+
+body {
+	background-attachment: fixed;
+	background-size: cover;
+	background-color: lightgrey;
+	background-image: url(https://s2.ax1x.com/2019/08/01/eaLsmR.jpg);
+}
+
+/*上方，顶栏*/
+#main header {
+	width: 100%;
+	height: 50px;
+	background-color: rgba(0, 0, 0, 0);
+	color: rgba(0,171,255,1.00);
+	left: 0px;
+	right: 0px;
+	top: 0px;
+	bottom: 0px;
+	transition: 0.5s;
+	/*background-attachment: fixed;*/
+	position: fixed;
+	font-family: '微软雅黑';
+}
+
+/*鼠标放上去出现*/
+#main header:hover {
+	background-color: rgba(0, 0, 0, 0.7);
+	font-size: 120%;
+    font-family: '微软雅黑';
+}
+
+/*顶栏传送门*/
+#main header a {
+    font-family: '微软雅黑';
+	text-decoration: none;
+	color: #0cf;
+}
+
+#main header a:hover {
+    font-family: '微软雅黑';
+	transition: 0.5s;
+	color: rgb(255, 238, 0);
+}
+
+/*顶栏logo（左侧）*/
+#main header #logo {
+	width: 28%;
+	float: left;
+	padding-left: 2%;
+	padding-bottom: 12px;
+	padding-top: 12px;
+    font-family: '微软雅黑';
+	color: #0cf;
+}
+
+/*顶栏右侧*/
+#main header nav {
+	text-align: right;
+	padding-top: 12px;
+	padding-bottom: 12px;
+	padding-right: 2%;
+	width: 68%;
+	float: left;
+	color: #0cf;
+	background-color: rgba(0, 0, 0, 0);
+    font-family: '微软雅黑';
+	font-weight: normal;
+}
+
+#main header nav a {
+	color: #0cf;
+	text-decoration: none;
+}
+
+#main header:hover nav {
+	text-align: right;
+	padding-top: 12px;
+	padding-bottom: 12px;
+	padding-right: 2%;
+	width: 68%;
+	float: left;
+	color: #0cf;
+	/*background-color: rgba(255,255,255,1.00);*/
+    font-family: '微软雅黑';
+	font-weight: normal;
+}
+
+/*顶栏侧面按钮（链接的位置）*/
+#main header nav .button {
+	top: 0px;
+	height: 50px;
+	float: right;
+	text-align: center;
+	width: 80px;
+	color: #0cf;
+	background-color: rgba(0, 0, 0, 0);
+}
+
+#main header nav .button:hover {
+	height: 50px;
+	float: right;
+	text-align: center;
+}
+
+#main header:hover nav .button  {
+	color: #0cf;
+}
+
+#main header nav .button a {
+	color: #0cf;
+}
+
+#main header:hover nav .button a {
+	color: #0cf;
+}
+
+#main header:hover nav .button a:hover {
+	color: rgb(255, 238, 0);
+}
+
+/*主要部分*/
+#content {
+	background-attachment: fixed;
+	left: 0px;
+	right: 0px;
+	top: 0px;
+	width: 100%;
+	height: auto;
+	text-align: center;
+}
+
+/*标题*/
+#content h1 {
+	/* Styling for main headings */
+	padding-left: 5%;
+	padding-right: 5%;
+	color: rgba(11,255,100,1.00);
+	font-size: 400%;
+    	font-family: '微软雅黑';
+	text-shadow: 2px 2px 0px rgba(255,255,255,1.00);
+}
+
+#content h2 {
+	background-color: rgba(0,0,0,0.00);
+	color: rgba(255,255,255,1.00);
+	padding-left: 5%;
+	padding-right: 5%;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	border-radius: 15px;
+	height: auto;
+	/*width: 60%;*/
+	max-width: 500px;
+	text-shadow: 0px 0px 2px black;
+}
+
+#content {
+	/*Captions ot Taglines */
+	font-family: source-sans-pro, sans-serif;
+	font-style: normal;
+	font-weight: normal;
+	margin-top: 115px;
+	color: rgba(15,120,217,1.00);
+	text-align: left;
+}
+
+/*方块*/
+#content #mainContent .boxes {
+	margin-bottom: 20px;
+	font-family: '微软雅黑', Consolas;
+	width: 96%;
+	background-color: rgba(0, 0, 0, 0.7);
+	text-align: left;
+	border-radius: 15px;
+	max-height: 12345px;
+	color: rgb(255, 255, 255);
+	background-attachment: fixed;
+	padding: 20px;
+}
+
+/*hljs设置*/
+.hljs {
+	display: block;
+	overflow-x: auto;
+	padding: 0.5em;
+	background: #23241f !important; /*背景颜色*/
+	color:white;
+	font-family: consolas !important; /*字体*/
+}
+
+/*文章设置*/
+#content #mainContent .boxes p {
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+
+#content #mainContent .boxes h1 {
+	color: rgb(255, 255, 255);
+	font-size: 200%;
+	text-shadow: none;
+	padding-top: 0px;
+	padding-right: 0%;
+	padding-left: 0%;
+}
+
+#content #mainContent .boxes h2 {
+	color: rgb(255, 255, 255);
+	font-size: 150%;
+	padding-top: 0px;
+	padding-right: 0%;
+	padding-left: 0%;
+	text-shadow: none;
+}
+
+#content #mainContent .boxes h1 a {
+	text-decoration: none;
+	color: #0cf;
+	transition: 0.3s;
+}
+
+#content #mainContent .boxes h1 a:hover {
+	color: rgb(255, 238, 0);
+}
+
+/*左侧（主要）部分*/
+#content #mainContent {
+	margin-top: 100px;
+	text-align: center;
+	padding-left: 5%;
+	width: 68%;
+	padding-top: 40px;
+	float: left;
+}
+
+#content #mainContent .boxes p a {
+	text-decoration: none;
+	color: #0cf;
+	transition: 0.3s;
+}
+
+#content #mainContent .boxes a {
+	text-decoration: none;
+	color: #0cf;
+	transition: 0.3s;
+}
+
+#content #mainContent .boxes a:hover {
+	color: rgb(255, 238, 0);
+}
+
+#content #mainContent .boxes p a:hover {
+	color: rgb(255, 238, 0);
+}
+
+/*侧边栏链列表*/
+#content #sidebar .boxes p {
+	word-break: break-all;
+}
+
+/*翻页按钮位置*/
+#content #mainContent #page-turning {
+	font-family: '微软雅黑', Consolas;
+	width: 96%;
+	background-color: rgba(0, 0, 0, 0.0);
+	text-align: center;
+	border-radius: 15px;
+	height: auto;
+	color: rgb(255, 255, 255);
+	background-attachment: fixed;
+	padding: 20px;
+}
+
+/*翻页按钮*/
+#content #mainContent #page-turning .button {
+	display: inline-block;
+	color: white;
+	text-align: center;
+	background-color: rgba(0, 0, 0, 0.7);
+	border-radius: 20px;
+	height: auto;
+	width: auto;
+	padding-right: 10px;
+	padding-left: 10px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	transition: 0.4s;
+	margin-top: 7px;
+	margin-left: 10px;
+}
+
+/*侧边栏*/
+#content #sidebar {
+	margin-top: 100px;
+	text-align: center;
+	padding-left: 1%;
+	padding-right: 5%;
+	width: 19%;
+	padding-top: 40px;
+	float: right;
+}
+
+/*方格*/
+#content #sidebar .boxes {
+	margin-bottom: 20px;
+	font-family: '微软雅黑';
+	width: 100%;
+	background-color: rgba(0, 0, 0, 0.7);
+	text-align: left;
+	border-radius: 15px;
+	height: auto;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	color: rgb(255, 255, 255);
+	background-attachment: fixed;
+	padding: 20px;
+}
+
+#content #sidebar .boxes p {
+	padding-top: 0px;
+}
+
+#content #sidebar .boxes p a {
+	text-decoration: none;
+	color: #0cf;
+	transition: 0.3s;
+}
+
+#content #sidebar .boxes a {
+	text-decoration: none;
+	color: #0cf;
+	transition: 0.3s;
+}
+
+#content #sidebar .boxes a:hover {
+	color: rgb(255, 238, 0);
+}
+
+
+#content #sidebar .boxes p a:hover {
+	color: rgb(255, 238, 0);
+}
+
+#content #sidebar .boxes h1 {
+	font-size: 200%;
+	color: rgb(255, 255, 255);
+	padding-top: 0px;
+	padding-left: 2%;
+	padding-right: 2%;
+}
+
+/*头像*/
+#content #sidebar #head-portrait {
+	background-attachment: fixed;
+	background-size: cover;
+	margin-bottom: 5px;
+	width: 100%;
+	background-color: rgba(208,207,207,0.00);
+	overflow: hidden;
+	border-radius: 3%;
+}
+
+#content #sidebar #head-portrait img {
+	overflow: hidden;
+	border-radius: 5px;
+	transition: 0.5s;
+	display: inline;
+}
+
+#content #sidebar #head-portrait img:hover{
+	transform: scale(1.10,1.10);
+}
+
+/*脚注*/
+#footer {
+	/* Footer bar at the bottom of the page */
+	height: auto;
+	clear: both;
+	margin-top: 100px;
+	color: rgba(0,0,0,1.00);
+	text-align: center;
+	width: 100%;
+	display: block;
+}
+
+#footer a {
+	color: rgba(0,0,0,1.00);
+	transition: 0.5s;
+}
+
+#footer a:hover {
+	text-decoration: none;
+}
+
+/*代码块*/
+pre {
+	overflow-x: auto;
+	margin-right: 2%;
+	font-family: Consolas;
+	border-radius: 2px;
+	padding-top: 2%;
+	padding-bottom: 2%;
+	padding-left: 2%;
+	padding-right: 2%;
+	text-align: justify;
+	word-break:break-all;
+}
+
+/*代码*/
+pre code {
+	background-color: rgba(0, 0, 0, 0);
+	overflow-x: auto;
+	font-family: Consolas;
+	color: black;
+}
+
+code {
+	border-radius: 3px;
+	padding: 0px 1px 0px 1px;
+	box-shadow: 0 0 1px white;
+	overflow-x: auto;
+	background-color: black;
+	font-family: Consolas;
+	color: white;
+	margin-left: 2px;
+	margin-right: 2px;
+}
+
+/*发表时间（暂未用）*/
+.time {
+	color: gray;
+	font-size: 50%;
+}
+
+/*图片*/
+img {
+	width: 100%;
+	height: auto;
+}
+
+/*删除线*/
+del {
+	color: grey;
+	transition: 0.3s;
+}
+
+/*列表（无需序）*/
+li {
+	margin-top: 2px;
+}
+
+/*标签*/
+#content #mainContent .boxes .tag {
+	display: inline-block;
+	color: white;
+	text-align: center;
+	background-color: blue;
+	border-radius: 3px;
+	height: auto;
+	width: auto;
+	padding-right: 8px;
+	padding-left: 8px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	transition: 0.4s;
+	margin-top: 7px;
+	margin-left: 10px;
+}
+
+#content #mainContent .boxes .tag:hover {
+	background-color: red;
+}
+
+#content #sidebar .boxes .tag {
+	display: inline-block;
+	color: white;
+	text-align: center;
+	background-color: blue;
+	border-radius: 3px;
+	height: auto;
+	width: auto;
+	padding-right: 8px;
+	padding-left: 8px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	transition: 0.3s;
+	margin-top: 7px;
+	margin-left: 2px;
+}
+
+#content #sidebar .boxes .tag:hover {
+	background-color: red;
+}
+
+/*加粗*/
+strong {
+	color: red;
+	font-size: 105%;
+}
+
+/*引用*/
+blockquote {
+	border-left: 5px solid grey;
+	padding-left: 1em;
+	padding-top: 1px;
+	padding-bottom: 1px;
+}
+
+/*数学公式*/
+.MJXc-display {
+    overflow-x: auto;
+}
+
+/*折叠栏*/
+.folder .check {
+    position: absolute;
+    clip: rect(0 0 0 0);
+}
+.fold-info,
+.unfold-info {
+    color: #0cf;
+	cursor: pointer;
+}
+.fold-info:hover,
+.unfold-info:hover {
+	color: rgb(255, 238, 0);
+	transition: 0.3s;
+}
+.folder .fold-info {
+    display: inline-block;
+}
+.unfold-info {
+    display: none;
+}
+.folder .check:checked ~ .fold-info {
+    display: none;
+}
+.folder .check:checked ~ .unfold-info {
+    display: inline-block;
+}
+.folder .fold-element {
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+.folder .check:checked ~ .fold-element {
+    height: auto;
+    opacity: 1;
+}
+
+/*目录*/
+.menu .check {
+	position: absolute;
+	bottom: 50px;
+	right: 50px;
+	width: auto;
+	height: auto;
+	text-align: center;
+    clip: rect(0 0 0 0);
+}
+.fold-info,
+.unfold-info {
+    color: #0cf;
+	cursor: pointer;
+}
+.fold-info:hover,
+.unfold-info:hover {
+	color: rgb(255, 238, 0);
+	transition: 0.3s;
+}
+.menu .fold-info {
+    display: inline-block;
+}
+.unfold-info {
+    display: none;
+}
+.menu .check:checked ~ .fold-info {
+    display: none;
+}
+.menu .check:checked ~ .unfold-info {
+    display: inline-block;
+}
+.menu .fold-element {
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+.menu .check:checked ~ .fold-element {
+    height: auto;
+    opacity: 1;
+}
+
+
+/*highlight*/
+.hljs {
+	display: block;
+	overflow-x: auto;
+	padding: 0.5em;
+	background: #23241f !important;
+	color:white;
+	font-size:16px !important;
+	font-family:Consolas !important;
+}
+  
+.hljs,
+.hljs-tag,
+.hljs-subst {
+	color: #f8f8f2;
+}
+  
+.hljs-strong,
+.hljs-emphasis {
+	color: #a8a8a2;
+}
+  
+.hljs-bullet,
+.hljs-quote,
+.hljs-number,
+.hljs-regexp,
+.hljs-literal,
+.hljs-link {
+	color: #ae81ff;
+}
+  
+.hljs-code,
+.hljs-title,
+.hljs-section,
+.hljs-selector-class {
+	color: #a6e22e;
+}
+  
+.hljs-strong {
+	font-weight: bold;
+}
+  
+.hljs-emphasis {
+	font-style: italic;
+}
+  
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-name,
+.hljs-attr {
+	color: #f92672;
+}
+
+.hljs-keyword,.hljs-built_in{
+	color:#66d9ef;
+}
+  
+.hljs-symbol,
+.hljs-attribute {
+	color: #66d9ef;
+}
+  
+.hljs-params,
+.hljs-class .hljs-title {
+	color: #f8f8f2;
+}
+  
+.hljs-string,
+.hljs-type,
+.hljs-builtin-name,
+.hljs-selector-id,
+.hljs-selector-attr,
+.hljs-selector-pseudo,
+.hljs-addition,
+.hljs-variable,
+.hljs-template-variable {
+	color: #e6db74;
+}
+  
+.hljs-comment,
+.hljs-deletion{
+	color: #75715e;
+}
+  
+.hljs-meta{
+	color: #f92672;
+}
+
+  
+/*移动端适配*/
+@media screen and (max-width:796px) {
+	#content #mainContent {
+		padding: 0px;
+		align-content: center;
+		float: none;
+		width: 96%;
+		margin-bottom: 0;
+		margin-top: 75px;
+	}
+	#content #sidebar {
+		margin-top: -40px;
+		align-content: center;
+		float: none;
+		width: 96%;
+	}
+	#content #sidebar .boxes {
+		padding: 7px;
+		padding-bottom: 15px;
+		width: 100%;
+	}
+	#content #mainContent .boxes{
+		padding: 7px;
+		padding-bottom: 15px;
+		width: 100%;
+	}
+	#content {
+		margin-top: 100px;
+	}
+	#content h1 {
+		/* Styling for main headings */
+		font-size: 200%;
+		color: rgba(11,255,100,1.00);
+		font-family: '微软雅黑';
+		text-shadow: 2px 2px 0px rgba(255,255,255,1.00);
+	}
+	#content h2 {
+		background-color: rgba(0,0,0,0.00);
+		color: rgba(255,255,255,1.00);
+		padding-left: 20%;
+		padding-right: 20%;
+		padding-top: 5px;
+		padding-bottom: 5px;
+		border-radius: 15px;
+		height: auto;
+		width: 60%;
+		max-width: 500px;
+		font-size: 100%;
+	}
+	#main header {
+		/*font-size: 60%;*/
+		height: 50px;
+	}
+	#main header nav .button {
+		width: 50px;
+	}
+	#main header nav .botton:hover {
+		width: 50px;
+	}
+	#content #sidebar #head-portrait img:hover{
+		transform: none;
+	}
+}

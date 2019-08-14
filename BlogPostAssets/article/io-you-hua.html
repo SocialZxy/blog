@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>快读 - Socialist_Zhao's Blog</title>
+<link href="../styles/styles.css" type="text/css" rel="stylesheet">
+<link href="http://cdn.bootcss.com/highlight.js/8.0/styles/monokai_sublime.min.css" rel="stylesheet">  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+</head>
+<!--https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1559377105107&di=fb997d723d154bd93b5a3408a80d695f&imgtype=0&src=http%3A%2F%2Fpic.58pic.com%2F58pic%2F13%2F54%2F94%2F20k58PICyIM_1024.jpg-->
+<!--https://s2.ax1x.com/2019/06/01/V15T3R.jpg-->
+<body>
+	<!--这个部分是header，即上面那一条东西-->
+	<div id="main">
+		<header>
+			<!--这个是header上面的logo，“Social_Zhao's Blog”-->
+			<div id="logo">
+				<a href="../../index.html">SZ's Blog</a>
+			</div>
+			<!--这个脚本将显示header里面的nav，“友链 关于 文章”-->
+			<script src="../js/header-article.js"></script>
+		</header>
+	</div>
+	<div id="content">
+		<!--这里是大标题-->
+		<script src="../js/title.js"></script>
+		<!--左边：主要部分-->
+		<section id="mainContent">
+			<!--第一个box：前言-->
+			<div class="boxes">
+                <h1>我军IO优化装备完成！</h1>
+                <a href="../tags/tag-gong-ju.html"><div class="tag">实用工具</div></a>
+                <p>详解（初级）IO优化</p>
+                <p>众所周知，在某些数据结构题当中，IO量极大。而输入和输出有需要一定的时间。这个时候，我们的程序运行起来就会出现如下的情况：</p>
+                <h3>留给那位大♂人的时间不多了</h3>
+                <p>所以这时候，我们就需要一个叫做IO优化的东西。（OI需要IO优化）</p>
+                <p>（限于作者水平，本文仅讲述当下被称作“龟速快读”的OI优化）</p>
+                <h2>读入优化：</h2>
+                <p>原理：<code>getchar()</code>函数的效率相对较高</p>
+                <p>代码：</p>
+                <pre><code class="cpp">int get() {
+    int x = 0, f = -1; char c = getchar();
+    while(!isdigit(c)) { if(c == '-') f = -1; c = getchar(); }
+    while(isdigit(c)) { x = x * 10 + c - '0'; c = getchar(); }
+    return x * f;
+}</code></pre>
+                <p>解释：</p>
+                <li>第一行：变量，c是字符，读入数字减去'0'的ASCII码值，x是读入数的绝对值，f是符号</li>
+                <li>第二行：吃掉多余字符，并且在其中识别出'-'号（<code>!isdigit()</code>表示不是数位）</li>
+                <li>第三行：读入数字，举个例子，现在x=123，我们接受到了一个字符c='4'，下一个x就是10x+c-'0'，即1234</li>
+                <li>最后返回一个带有符号的数</li>
+                <p>当然前面的<code>int</code>可以换成<code>template&lt;typename T&gt;</code>这类东西</p>
+                <p>我们在对它进行一些更改，使得它能够读入实数</p>
+                <pre><code class="cpp">double getlf(){
+    double x = 0, y = 1.0; int f = 1; char c = getchar();
+    while(!isdigit(c)) { if(c == '-') f = -1; c = getchar(); }
+    while(isdigit(c)) { x = x * 10 + c - '0'; c = getchar(); }
+    if(c != '.') return x * f;
+    c=getchar();
+    while(isdigit(c)) { x += (y /= 10) * (c - '0'); c = getchar(); }
+    return x * f;
+}</code></pre>
+                <p>注意第五行不能省去，因为如果给出一组这样的数据：<code>1 2</code>，会被读成<code>1.2</code></p>
+                <h2>输出优化：</h2>
+                <p>原理：同样，putchar比其他函数更快</p>
+                <p>代码：</p>
+                <pre><code class="cpp">void write(int x)
+{
+    if(x&lt;0) putchar('-'),x=-x;
+    if(x&gt;9) write(x/10);
+    putchar(x%10+'0');
+}</code></pre>
+                <p>这个是用递归实现的。流程大概如下：</p>
+                <li>有一个数1234需要输出：</li>
+                <li>目前的范围：[1234]</li>
+                <li>下一层调用：[123]4</li>
+                <li>下一层调用：[12]34</li>
+                <li>下一层调用：[1]234，此时的x=1，已经小于9了，所以输出'1'</li>
+                <li>返回上一层：输出'2'</li>
+                <li>以此类推，输出'3'，'4'，合起来就是1234了，输出完毕</li>
+                <p>输出实数太毒瘤了，所以这里就不写了</p>
+                <p>如果有什么锅可以在评论区告诉作者</p>
+			</div>
+		<br>
+
+		<script src="../js/utterances.js"></script>
+		</section>
+		<!--右侧边栏：将使用脚本-->
+		<script src="../js/sidbar-article.js"></script>
+	</div>
+	<br><br>
+	<script src="../js/footer.js"></script>
+	<script src="https://highlightjs.org/static/highlight.site.pack.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+</body>
+</html>
